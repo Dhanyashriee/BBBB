@@ -1,0 +1,363 @@
+Alright—this is a **full DevOps pipeline with Jenkins + Docker + GitHub**. I’ll guide you exactly **what to open, where to click, what to type**. Follow in order—don’t skip.
+
+---
+
+# 🧪 Q05 — Jenkins Pipeline (FULL STEP-BY-STEP)
+
+---
+
+# 🟢 STEP 0 — What you need ready
+
+Before starting:
+
+✔ Docker Desktop running
+✔ GitHub repo (your `ci-python-app` or similar)
+✔ Docker Hub account
+
+---
+
+# 🐳 STEP 1 — Start Jenkins in Docker
+
+## 📍 Where to do this:
+
+👉 Open **Terminal (PowerShell / VS Code terminal)**
+
+---
+
+## ▶ Run these commands ONE BY ONE
+
+### 1️⃣ Create volume
+
+```bash
+docker volume create jenkins-data
+```
+
+---
+
+### 2️⃣ Run Jenkins container
+
+```bash
+docker run -d ^
+  --name jenkins ^
+  -p 8081:8080 -p 50001:50000 ^
+  -v jenkins-data:/var/jenkins_home ^
+  -v /var/run/docker.sock:/var/run/docker.sock ^
+  jenkins/jenkins:lts
+```
+
+👉 I used **8081 (not 8080)** to avoid conflict
+
+---
+
+### 3️⃣ Get admin password
+
+```bash
+docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+```
+
+👉 Copy the long password
+
+---
+
+# 🌐 STEP 2 — Open Jenkins UI
+
+Open browser:
+
+```text
+http://localhost:8081
+```
+
+---
+
+## 🟢 Setup Jenkins
+
+1. Paste password
+2. Click **Install suggested plugins**
+3. Wait (2–5 mins)
+4. Create username/password (remember it!)
+
+---
+
+# 🧩 STEP 3 — Install Docker inside Jenkins
+
+## 📍 Go to terminal again
+
+```bash
+docker exec -u root jenkins bash -c "apt-get update && apt-get install -y docker.io"
+```
+
+---
+
+# 🔌 STEP 4 — Install Docker Pipeline Plugin
+
+In Jenkins UI:
+
+👉 Manage Jenkins → Plugins → Available plugins
+
+Search:
+
+```text
+Docker Pipeline
+```
+
+✔ Install it
+✔ Restart Jenkins
+
+---
+
+# 🔐 STEP 5 — Add Docker Hub Credentials
+
+👉 Jenkins Dashboard → Manage Jenkins → Credentials
+
+---
+
+## 🟢 Add credentials
+
+1. Click **Global → Add Credentials**
+
+Fill:
+
+* Kind: Username & Password
+* Username: `dhanyashriee`
+* Password: (Docker Hub token)
+* ID:
+
+```text
+dockerhub-creds
+```
+
+👉 Click Save
+
+---
+
+# 📄 STEP 6 — Add Jenkinsfile in GitHub
+
+## 📍 Open your project in VS Code
+
+Create file:
+
+```text
+Jenkinsfile
+```
+
+---
+
+## ✏️ Paste this (UPDATED PORT 5051)
+
+```groovy
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = "python-app"
+        DOCKER_HUB_USER = "dhanyashriee"
+    }
+
+    stages {
+
+        stage('Clone') {
+            steps {
+                git branch: 'main',
+                url: 'https://github.com/Dhanyashriee/ci-python-app.git'
+            }
+        }
+
+        stage('Build Image') {
+            steps {
+                sh 'docker build -t $DOCKER_HUB_USER/$IMAGE_NAME:latest .'
+            }
+        }
+
+        stage('Push to Hub') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh '''
+                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                    docker push $DOCKER_HUB_USER/$IMAGE_NAME:latest
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'docker run -d -p 5051:5050 dhanyashriee/python-app:latest'
+            }
+        }
+    }
+}
+```
+
+---
+
+## 📤 Push to GitHub
+
+```bash
+git add .
+git commit -m "add Jenkins pipeline"
+git push
+```
+
+---
+
+# ⚙️ STEP 7 — Create Jenkins Pipeline Job
+
+👉 Jenkins Dashboard
+
+---
+
+## 🟢 Steps
+
+1. Click **New Item**
+2. Name:
+
+```text
+docker-pipeline
+```
+
+3. Select:
+   ✔ Pipeline
+4. Click OK
+
+---
+
+## 🟢 Configure
+
+Scroll down → Pipeline section
+
+Select:
+
+```text
+Pipeline script from SCM
+```
+
+---
+
+Fill:
+
+* SCM → Git
+* Repo URL:
+
+```text
+https://github.com/Dhanyashriee/ci-python-app.git
+```
+
+* Branch:
+
+```text
+*/main
+```
+
+---
+
+Click:
+👉 Save
+
+---
+
+# ▶ STEP 8 — Run Pipeline
+
+👉 Click:
+**Build Now**
+
+---
+
+# 📊 STEP 9 — Watch Output
+
+Click build number → Console Output
+
+You should see:
+
+✔ Clone
+✔ Build
+✔ Push
+✔ Deploy
+
+---
+
+# 🌐 STEP 10 — Verify Deployment
+
+Open browser:
+
+```text
+http://localhost:5051
+```
+
+---
+
+## 🎯 Expected Output
+
+```text
+CI/CD Flask App Running!
+```
+
+---
+
+# 🎓 Viva Answers (IMPORTANT)
+
+### ❓ What is Jenkins?
+
+👉 Automation server for CI/CD pipelines
+
+---
+
+### ❓ Why Docker socket mounted?
+
+👉 So Jenkins can run Docker commands
+
+---
+
+### ❓ What is Jenkinsfile?
+
+👉 Pipeline as code (Groovy script)
+
+---
+
+### ❓ What does pipeline do?
+
+👉 Clone → Build → Push → Deploy
+
+---
+
+# ⚠️ Common Errors
+
+### ❌ Docker not found
+
+👉 Install docker inside container (Step 3)
+
+---
+
+### ❌ Permission denied
+
+👉 Restart Jenkins container
+
+---
+
+### ❌ Port already used
+
+👉 Change to 5052 / 5053
+
+---
+
+# 🚀 You completed
+
+✔ Jenkins setup
+✔ CI/CD pipeline
+✔ Docker integration
+✔ GitHub integration
+
+---
+
+# 🔥 Next (if you want)
+
+👉 Kubernetes deployment
+👉 Full CI/CD diagram
+👉 Viva Q&A
+
+---
+
+If you get ANY error, send screenshot—I’ll fix immediately 👍
