@@ -1,0 +1,319 @@
+Great—this is your **CI for Python testing** (no Docker here). I’ll walk you **exactly what to open, what to create, and what to click** so it runs first time.
+
+---
+
+# 🧪 Q10 — GitHub Actions: Build & Test Python App (pytest)
+
+---
+
+# 🎯 Goal
+
+* Write a small Python app
+* Write tests using **pytest**
+* Push to GitHub
+* GitHub Actions automatically runs tests ✅
+
+---
+
+# 🟢 STEP 0 — What to open
+
+* Open Visual Studio Code
+* Open terminal inside VS Code (**Ctrl + `**)
+
+---
+
+# 📁 STEP 1 — Create project folder
+
+```bash id="s1"
+mkdir python-ci-test
+cd python-ci-test
+```
+
+---
+
+# 📄 STEP 2 — Create required files
+
+---
+
+## 🔹 1. Create `app.py`
+
+👉 New File → `app.py`
+
+```python id="s2"
+def add(a, b):
+    return a + b
+
+def greet(name):
+    return f"Hello, {name}!"
+```
+
+---
+
+## 🔹 2. Create `test_app.py`
+
+👉 New File → `test_app.py`
+
+```python id="s3"
+from app import add, greet
+
+def test_add():
+    assert add(2, 3) == 5
+
+def test_greet():
+    assert greet("World") == "Hello, World!"
+```
+
+---
+
+## 🔹 3. Create `requirements.txt`
+
+👉 New File → `requirements.txt`
+
+```text id="s4"
+pytest
+```
+
+---
+
+# 🧪 STEP 3 — Test locally (VERY IMPORTANT)
+
+👉 Install pytest:
+
+```bash id="s5"
+pip install pytest
+```
+
+---
+
+👉 Run tests:
+
+```bash id="s6"
+pytest -v
+```
+
+---
+
+## ✅ Expected output
+
+```text id="s7"
+test_add PASSED
+test_greet PASSED
+```
+
+---
+
+# 🌐 STEP 4 — Create GitHub repository
+
+Go to GitHub
+
+👉 Create repo:
+
+```text id="s8"
+python-ci-test
+```
+
+---
+
+# 🔗 STEP 5 — Push code to GitHub
+
+```bash id="s9"
+git init
+git add .
+git commit -m "initial python test app"
+git branch -M main
+git remote add origin https://github.com/<your-username>/python-ci-test.git
+git push -u origin main
+```
+
+---
+
+# ⚙️ STEP 6 — Create GitHub Actions workflow
+
+---
+
+## 📁 Create folders
+
+Inside your project:
+
+```text id="s10"
+.github/workflows
+```
+
+---
+
+## 📄 Create file
+
+```text id="s11"
+python-test.yml
+```
+
+---
+
+## ✏️ Paste this EXACT code
+
+```yaml id="s12"
+name: Python Build & Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: pytest test_app.py -v
+```
+
+---
+
+# 📤 STEP 7 — Push workflow
+
+```bash id="s13"
+git add .
+git commit -m "add GitHub Actions test workflow"
+git push
+```
+
+---
+
+# 🚀 STEP 8 — Watch pipeline run
+
+Go to:
+👉 GitHub → your repo → **Actions tab**
+
+---
+
+## You will see:
+
+* 🟡 Running
+* ✅ Success
+
+---
+
+# 📊 STEP 9 — Check result
+
+Click workflow → open job
+
+✔ You should see:
+
+```text id="s14"
+test_add PASSED
+test_greet PASSED
+```
+
+---
+
+# 🎯 Expected Output
+
+✔ 2 tests passed
+✔ Green checkmark ✅
+✔ Runs automatically on every push
+
+---
+
+# 🧠 Concepts (VERY IMPORTANT)
+
+| Concept  | Meaning                          |
+| -------- | -------------------------------- |
+| CI       | Automatic testing on code change |
+| pytest   | Python testing framework         |
+| workflow | Automation file in GitHub        |
+| job      | Task executed in pipeline        |
+
+---
+
+# ⚠️ Common Errors + Fix
+
+---
+
+## ❌ pytest not found
+
+👉 Fix:
+
+```bash id="s15"
+pip install pytest
+```
+
+---
+
+## ❌ Module not found
+
+👉 Ensure:
+
+```text id="s16"
+app.py and test_app.py in same folder
+```
+
+---
+
+## ❌ Workflow not running
+
+👉 Check:
+
+```text id="s17"
+branch = main
+file path = .github/workflows/python-test.yml
+```
+
+---
+
+# 🎓 Viva Questions
+
+---
+
+### ❓ What is pytest?
+
+👉 Testing framework for Python
+
+---
+
+### ❓ What is CI?
+
+👉 Automatic build & test process
+
+---
+
+### ❓ When does workflow run?
+
+👉 On push or pull request
+
+---
+
+### ❓ Why test automation?
+
+👉 To catch bugs early
+
+---
+
+# 🚀 You completed
+
+✔ Python testing
+✔ GitHub Actions CI
+✔ Automated validation
+
+---
+
+# 🔥 Next (if needed)
+
+👉 Combine CI + Docker
+👉 Full CI/CD pipeline
+👉 DevOps viva revision
+
+---
+
+If anything fails, send screenshot—I’ll fix instantly 👍
