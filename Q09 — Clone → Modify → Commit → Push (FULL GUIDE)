@@ -1,0 +1,304 @@
+Great—this is a **core Git workflow lab**. I’ll walk you through it like a checklist: **what to open, where to click, what to type, what you should see**.
+
+---
+
+# 🧪 Q09 — Clone → Modify → Commit → Push (FULL GUIDE)
+
+---
+
+# 🟢 STEP 0 — What to open
+
+Use any one terminal (pick one and stick to it):
+
+* **Git Bash** ⭐ (best)
+* or VS Code terminal (Ctrl + `)
+
+Also open your repo page on GitHub in a browser.
+
+---
+
+# 🧾 STEP 1 — Get your repo URL
+
+On GitHub:
+
+1. Open your repository
+2. Click **Code** (green button)
+3. Copy the HTTPS URL, e.g.
+
+```text id="u1a2b3"
+https://github.com/<username>/<repo-name>.git
+```
+
+---
+
+# 📥 STEP 2 — Clone the repository
+
+## 📍 In terminal
+
+Go to a location (Desktop or Documents):
+
+```bash id="g1h2i3"
+cd Desktop
+```
+
+Clone:
+
+```bash id="j4k5l6"
+git clone https://github.com/<username>/<repo-name>.git
+```
+
+---
+
+## ▶ What you should see
+
+```text id="m7n8o9"
+Cloning into '<repo-name>'...
+Receiving objects: 100%
+```
+
+---
+
+## ▶ Move into project
+
+```bash id="p0q1r2"
+cd <repo-name>
+```
+
+---
+
+## ▶ Verify files
+
+```bash id="s3t4u5"
+ls
+```
+
+✔ You should see files like:
+
+```text id="v6w7x8"
+README.md
+app.py
+Dockerfile
+```
+
+---
+
+# ✏️ STEP 3 — Modify a file
+
+---
+
+## 🟢 Edit using command
+
+```bash id="y9z0a1"
+echo "Updated content" >> README.md
+```
+
+---
+
+## ▶ Check file content
+
+```bash id="b2c3d4"
+cat README.md
+```
+
+✔ You’ll see new line added
+
+---
+
+## ▶ See changes (IMPORTANT)
+
+```bash id="e5f6g7"
+git diff
+```
+
+✔ Shows what changed:
+
+```text id="h8i9j0"
++ Updated content
+```
+
+---
+
+# 📦 STEP 4 — Stage the changes
+
+```bash id="k1l2m3"
+git add README.md
+```
+
+---
+
+## ▶ Check status
+
+```bash id="n4o5p6"
+git status
+```
+
+✔ Should show:
+
+```text id="q7r8s9"
+Changes to be committed
+```
+
+---
+
+# 💾 STEP 5 — Commit
+
+```bash id="t0u1v2"
+git commit -m "docs: update README with new content"
+```
+
+---
+
+## ▶ Output
+
+```text id="w3x4y5"
+1 file changed, 1 insertion(+)
+```
+
+---
+
+# ☁️ STEP 6 — Push to GitHub
+
+```bash id="z6a7b8"
+git push origin main
+```
+
+---
+
+## ▶ What happens
+
+* Git uploads changes
+* GitHub repo updates
+
+---
+
+# 🌐 STEP 7 — Verify on GitHub
+
+Go to your repo on GitHub
+
+👉 Open `README.md`
+
+✔ You should see:
+
+```text id="c9d0e1"
+Updated content
+```
+
+---
+
+# 📊 STEP 8 — Check commit history
+
+```bash id="f2g3h4"
+git log --oneline -3
+```
+
+---
+
+## ▶ Output
+
+```text id="i5j6k7"
+abc123 docs: update README
+def456 previous commit
+```
+
+---
+
+# 🧠 Concept (VERY IMPORTANT)
+
+| Command | Meaning               |
+| ------- | --------------------- |
+| clone   | copy repo from GitHub |
+| add     | stage changes         |
+| commit  | save changes locally  |
+| push    | upload to GitHub      |
+
+---
+
+# ⚠️ Common Errors + Fix
+
+---
+
+## ❌ Permission denied
+
+👉 Login required:
+
+```bash id="l8m9n0"
+git config --global user.name "Your Name"
+git config --global user.email "your@email.com"
+```
+
+---
+
+## ❌ Push rejected
+
+```text id="o1p2q3"
+failed to push
+```
+
+👉 Fix:
+
+```bash id="r4s5t6"
+git pull origin main --rebase
+git push origin main
+```
+
+---
+
+## ❌ Repo not found
+
+👉 Check URL is correct
+
+---
+
+# 🎓 Viva Questions
+
+---
+
+### ❓ What is cloning?
+
+👉 Copying a remote repo to local system
+
+---
+
+### ❓ Difference: commit vs push?
+
+👉 Commit = local save
+👉 Push = upload to remote
+
+---
+
+### ❓ What is git diff?
+
+👉 Shows changes between versions
+
+---
+
+### ❓ What is staging?
+
+👉 Preparing files before commit
+
+---
+
+# 🎯 Final Output
+
+✔ Repo cloned
+✔ File modified
+✔ Changes committed
+✔ Changes pushed
+✔ Visible on GitHub
+
+---
+
+# 🚀 You completed
+
+✔ Git basic workflow
+✔ Real repository update
+✔ Version control usage
+
+---
+
+If you want next:
+👉 Branching & merge (advanced Git)
+👉 Undo mistakes in Git
+👉 Full DevOps revision
+
+Just tell 👍
