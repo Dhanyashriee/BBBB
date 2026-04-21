@@ -1,0 +1,325 @@
+Nice—this one is a **clean, best-practice CI pipeline** using Docker Buildx 👍
+I’ll guide you **very clearly: what to open, where to click, what to type**.
+
+---
+
+# 🧪 Q07 — GitHub Actions (Buildx Docker Pipeline)
+
+---
+
+# 🎯 What you’ll achieve
+
+✔ Auto build Docker image
+✔ Auto push to Docker Hub
+✔ Uses modern **Buildx (best practice)**
+
+---
+
+# 🟢 STEP 0 — Prepare project
+
+## 📍 Open:
+
+👉 Visual Studio Code
+
+---
+
+## 📁 Create new folder
+
+```bash
+mkdir buildx-app
+cd buildx-app
+```
+
+---
+
+## 📄 Create files
+
+---
+
+### 🔹 `app.py`
+
+```python
+from flask import Flask
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "Buildx CI Pipeline Running!"
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=6060)
+```
+
+---
+
+### 🔹 `requirements.txt`
+
+```text
+flask
+```
+
+---
+
+### 🔹 `Dockerfile`
+
+```dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+
+EXPOSE 6060
+
+CMD ["python", "app.py"]
+```
+
+---
+
+# 🟢 STEP 1 — Test locally (optional)
+
+```bash
+docker build -t dhanyashriee/python-app:latest .
+docker run -d -p 6060:6060 dhanyashriee/python-app:latest
+```
+
+👉 Open:
+
+```text
+http://localhost:6060
+```
+
+---
+
+# 🌐 STEP 2 — Create GitHub repo
+
+Go to GitHub
+
+👉 Create repo:
+
+```text
+buildx-app
+```
+
+---
+
+# 🔗 STEP 3 — Push code
+
+```bash
+git init
+git add .
+git commit -m "initial buildx app"
+git branch -M main
+git remote add origin https://github.com/Dhanyashriee/buildx-app.git
+git push -u origin main
+```
+
+---
+
+# 🔐 STEP 4 — Add secrets
+
+Go to:
+👉 GitHub → Repo → Settings → Secrets → Actions
+
+---
+
+## 🟢 Add:
+
+### 1️⃣
+
+Name:
+
+```text
+DOCKER_USERNAME
+```
+
+Value:
+
+```text
+dhanyashriee
+```
+
+---
+
+### 2️⃣
+
+Name:
+
+```text
+DOCKER_PASSWORD
+```
+
+Value:
+👉 Docker Hub access token
+
+---
+
+# ⚙️ STEP 5 — Create workflow file
+
+## 📍 In VS Code
+
+Create folder:
+
+```text
+.github/workflows
+```
+
+---
+
+Create file:
+
+```text
+build-push.yml
+```
+
+---
+
+## ✏️ Paste this EXACT code
+
+```yaml
+name: Docker Build & Push
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/python-app:latest
+```
+
+---
+
+# 📤 STEP 6 — Push workflow
+
+```bash
+git add .
+git commit -m "add buildx pipeline"
+git push
+```
+
+---
+
+# 🚀 STEP 7 — Watch pipeline
+
+Go to:
+👉 GitHub → Actions tab
+
+---
+
+## You will see:
+
+* 🟡 Running
+* ✅ Success
+
+---
+
+# 📦 STEP 8 — Verify Docker Hub
+
+Go to Docker Hub
+
+👉 Repo:
+
+```text
+dhanyashriee/python-app
+```
+
+✔ New image pushed automatically
+
+---
+
+# 🎯 Expected Output
+
+✔ No manual docker commands
+✔ CI auto builds image
+✔ Image visible on Docker Hub
+
+---
+
+# 🧠 Viva Questions
+
+### ❓ What is Buildx?
+
+👉 Advanced Docker builder for multi-platform images
+
+---
+
+### ❓ Why docker/build-push-action?
+
+👉 Automates build & push in one step
+
+---
+
+### ❓ Difference from Q04?
+
+👉 Uses Buildx instead of manual docker commands
+
+---
+
+### ❓ What triggers pipeline?
+
+👉 Push or pull request to main
+
+---
+
+# ⚠️ Common Errors
+
+## ❌ Login failed
+
+👉 Wrong secrets
+
+---
+
+## ❌ Build failed
+
+👉 Dockerfile missing
+
+---
+
+## ❌ Push failed
+
+👉 Repo/tag mismatch
+
+---
+
+# 🚀 You completed
+
+✔ Advanced CI pipeline
+✔ Docker Buildx
+✔ GitHub automation
+
+---
+
+# 🔥 Next (if needed)
+
+👉 Full CI/CD pipeline
+👉 Kubernetes deployment
+👉 DevOps architecture diagram
+
+---
+
+If anything fails, send screenshot—I’ll fix immediately 👍
