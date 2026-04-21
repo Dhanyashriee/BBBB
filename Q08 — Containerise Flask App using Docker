@@ -1,0 +1,302 @@
+Alright—this one is straightforward but you still want it **clean, step-by-step, no confusion** 👍
+We’ll do **Flask → Docker → Run locally (no push)**.
+
+---
+
+# 🧪 Q08 — Containerise Flask App using Docker
+
+---
+
+# 🎯 Goal
+
+✔ Create Flask app
+✔ Create Docker image
+✔ Run container
+✔ Open in browser
+
+---
+
+# 🟢 STEP 0 — What to open
+
+👉 Open:
+
+* Visual Studio Code
+* Terminal inside VS Code
+
+---
+
+# 📁 STEP 1 — Create project folder
+
+In terminal:
+
+```bash id="g9y5m0"
+mkdir flask-container-app
+cd flask-container-app
+```
+
+---
+
+# 📄 STEP 2 — Create required files
+
+---
+
+## 🔹 1. Create `app.py`
+
+👉 In VS Code → New File → `app.py`
+
+Paste:
+
+```python id="a2d3w6"
+from flask import Flask
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return "<h1>Flask app running in Docker!</h1>"
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+```
+
+---
+
+## 🔹 2. Create `requirements.txt`
+
+👉 New File → `requirements.txt`
+
+Paste:
+
+```text id="p5v8z1"
+flask
+```
+
+---
+
+## 🔹 3. Create `Dockerfile`
+
+👉 New File → `Dockerfile` (no extension)
+
+Paste:
+
+```dockerfile id="k3j7c2"
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 5000
+
+CMD ["python", "app.py"]
+```
+
+---
+
+# 📂 STEP 3 — Verify folder structure
+
+Your folder should look like:
+
+```text id="l2w9x4"
+flask-container-app/
+ ├── app.py
+ ├── requirements.txt
+ └── Dockerfile
+```
+
+---
+
+# 🐳 STEP 4 — Build Docker Image
+
+👉 In terminal (inside project folder):
+
+```bash id="r8u6k1"
+docker build -t flask-container .
+```
+
+---
+
+## ✔ Expected output
+
+```text id="d4n7b9"
+Successfully built
+Successfully tagged flask-container
+```
+
+---
+
+# ▶ STEP 5 — Run Docker Container
+
+```bash id="w1m5q3"
+docker run -d -p 5000:5000 --name myflask flask-container
+```
+
+---
+
+## ✔ Check container
+
+```bash id="t7z2y8"
+docker ps
+```
+
+Expected:
+
+```text id="v6p3r1"
+myflask   Up   0.0.0.0:5000->5000
+```
+
+---
+
+# 🌐 STEP 6 — Open in Browser
+
+👉 Open:
+
+```text id="h8f2k5"
+http://localhost:5000
+```
+
+---
+
+## 🎯 Output
+
+```html id="c9x1z7"
+Flask app running in Docker!
+```
+
+---
+
+# 🔍 STEP 7 — Useful commands (IMPORTANT)
+
+---
+
+## ▶ Stop container
+
+```bash id="n3k7p2"
+docker stop myflask
+```
+
+---
+
+## ▶ Start again
+
+```bash id="b5q9w4"
+docker start myflask
+```
+
+---
+
+## ▶ Remove container
+
+```bash id="y2v8c6"
+docker rm -f myflask
+```
+
+---
+
+## ▶ Remove image
+
+```bash id="u4m1x9"
+docker rmi flask-container
+```
+
+---
+
+# ⚠️ Common Errors + Fix
+
+---
+
+## ❌ Port already in use
+
+```text id="z8n3k2"
+port 5000 already allocated
+```
+
+👉 Fix:
+
+```bash id="f1q6w8"
+docker run -d -p 5001:5000 --name myflask flask-container
+```
+
+Then open:
+
+```text id="k7v3n0"
+http://localhost:5001
+```
+
+---
+
+## ❌ Flask not found
+
+👉 Ensure:
+
+```text id="d2x5z1"
+requirements.txt contains: flask
+```
+
+---
+
+## ❌ Container exits
+
+```bash id="q9p4w7"
+docker logs myflask
+```
+
+---
+
+# 🧠 Viva Questions
+
+---
+
+### ❓ What is Docker container?
+
+👉 Lightweight isolated environment to run apps
+
+---
+
+### ❓ Why use Docker?
+
+👉 Consistency across systems
+
+---
+
+### ❓ What is Dockerfile?
+
+👉 Instructions to build image
+
+---
+
+### ❓ Difference: Image vs Container?
+
+| Image     | Container        |
+| --------- | ---------------- |
+| Blueprint | Running instance |
+
+---
+
+# 🎯 Final Result
+
+✔ Flask app containerised
+✔ Running via Docker
+✔ Accessible in browser
+
+---
+
+# 🚀 You completed
+
+✔ Basic containerisation
+✔ Flask deployment
+✔ Docker commands
+
+---
+
+# 🔥 Next (if needed)
+
+👉 Docker Compose
+👉 Kubernetes deploy this app
+👉 Full CI/CD
+
+---
+
+If anything fails, send screenshot—I’ll fix instantly 👍
