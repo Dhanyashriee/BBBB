@@ -1,0 +1,355 @@
+Nice—this is your **Kubernetes basics lab** (kubectl). I’ll walk you **exactly what to open, what to click, what to type**—no gaps.
+
+---
+
+# 🧪 Q06 — Kubernetes using `kubectl` (FULL GUIDE)
+
+---
+
+# 🟢 STEP 0 — Start Kubernetes
+
+## 📍 Where:
+
+Open **Docker Desktop**
+
+---
+
+## ▶ Enable Kubernetes
+
+1. Open Docker Desktop
+2. Go to **Settings ⚙️ → Kubernetes**
+3. ✔ Enable Kubernetes
+4. Click **Apply & Restart**
+
+⏳ Wait until it shows:
+
+```text
+Kubernetes is running
+```
+
+---
+
+# 🟢 STEP 1 — Open terminal
+
+👉 Open:
+
+* VS Code terminal OR
+* PowerShell
+
+---
+
+## ▶ Check kubectl
+
+```bash
+kubectl version --client
+```
+
+```bash
+kubectl get nodes
+```
+
+✔ You should see:
+
+```text
+docker-desktop   Ready
+```
+
+---
+
+# 🚀 STEP 2 — Create Deployment
+
+```bash
+kubectl create deployment myapp --image=nginx:latest
+```
+
+---
+
+## ▶ Check deployment
+
+```bash
+kubectl get deployments
+```
+
+Expected:
+
+```text
+myapp   1/1   Running
+```
+
+---
+
+## ▶ Check pods
+
+```bash
+kubectl get pods
+```
+
+Expected:
+
+```text
+myapp-xxxxx   Running
+```
+
+---
+
+# 📌 IMPORTANT CONCEPT
+
+👉 Deployment = manages pods
+👉 Pod = container instance
+
+---
+
+# 📈 STEP 3 — Scale Deployment
+
+---
+
+## 🔼 Scale up to 3
+
+```bash
+kubectl scale deployment myapp --replicas=3
+```
+
+---
+
+## ▶ Check pods
+
+```bash
+kubectl get pods
+```
+
+Expected:
+
+```text
+3 pods running
+```
+
+---
+
+## 🔽 Scale down to 1
+
+```bash
+kubectl scale deployment myapp --replicas=1
+```
+
+---
+
+# 🌐 STEP 4 — Expose Service
+
+```bash
+kubectl expose deployment myapp --port=80 --type=NodePort
+```
+
+---
+
+## ▶ Check service
+
+```bash
+kubectl get services
+```
+
+Example:
+
+```text
+myapp   NodePort   80:3xxxx
+```
+
+---
+
+## 🌍 Access in browser
+
+👉 Open:
+
+```text
+http://localhost:3xxxx
+```
+
+(Use your NodePort number)
+
+---
+
+# 🔍 STEP 5 — Inspect & Logs
+
+---
+
+## ▶ Get pod name
+
+```bash
+kubectl get pods
+```
+
+---
+
+## ▶ Describe pod
+
+```bash
+kubectl describe pod <pod-name>
+```
+
+👉 Shows:
+
+* events
+* status
+* container info
+
+---
+
+## ▶ View logs
+
+```bash
+kubectl logs <pod-name>
+```
+
+---
+
+# 🧹 STEP 6 — Cleanup
+
+```bash
+kubectl delete deployment myapp
+kubectl delete service myapp
+```
+
+---
+
+# 📄 STEP 7 — YAML Method (IMPORTANT)
+
+---
+
+## 📍 In VS Code
+
+Create file:
+
+```text
+deployment.yaml
+```
+
+---
+
+## ✏️ Paste this
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+```
+
+---
+
+## ▶ Apply YAML
+
+```bash
+kubectl apply -f deployment.yaml
+```
+
+---
+
+## ▶ Check everything
+
+```bash
+kubectl get all
+```
+
+---
+
+# 🎯 Expected Output
+
+✔ Deployment created
+✔ Pods running
+✔ Scaling works
+✔ Service accessible
+✔ YAML deployment works
+
+---
+
+# 🧠 Viva Questions (VERY IMPORTANT)
+
+### ❓ What is a Pod?
+
+👉 Smallest unit in Kubernetes (runs containers)
+
+---
+
+### ❓ What is Deployment?
+
+👉 Manages replicas of pods
+
+---
+
+### ❓ What is kubectl?
+
+👉 CLI tool to control Kubernetes
+
+---
+
+### ❓ What is NodePort?
+
+👉 Exposes service on a port accessible outside cluster
+
+---
+
+### ❓ Why YAML?
+
+👉 Infrastructure as Code (declarative config)
+
+---
+
+# ⚠️ Common Errors
+
+## ❌ kubectl not found
+
+👉 Restart Docker Desktop
+
+---
+
+## ❌ pods not running
+
+```bash
+kubectl describe pod <name>
+```
+
+---
+
+## ❌ cannot access service
+
+👉 Check NodePort number
+👉 Try:
+
+```text
+http://localhost:<port>
+```
+
+---
+
+# 🚀 You completed
+
+✔ Kubernetes deployment
+✔ Scaling
+✔ Service exposure
+✔ YAML config
+
+---
+
+# 🔥 Next (if you want)
+
+👉 Kubernetes + Docker app deploy
+👉 CI/CD with Kubernetes
+👉 Full DevOps diagram
+
+---
+
+If anything fails, send screenshot—I’ll fix instantly 👍
